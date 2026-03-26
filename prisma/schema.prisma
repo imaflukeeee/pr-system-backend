@@ -3,7 +3,7 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
-// 1. ส่วนตั้งค่า: บอก Prisma ว่าเราใช้ Database อะไร
+// ตั้งค่า Prisma ใช้ PostgreSQL
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,11 +12,12 @@ datasource db {
   provider = "postgresql"
 }
 
-// 2. ตารางที่ 1: ตารางเก็บข้อมูลผู้ใช้งาน (สำหรับ Login)
+// Table เก็บข้อมูลผู้ใช้งาน (สำหรับ Login)
 model User {
-  id       Int           @id @default(autoincrement())   //รหัสผู้ใช้ (ให้ระบบรันเลข 1, 2, 3... อัตโนมัติ)
+  id       Int           @id @default(autoincrement())   // รหัสผู้ใช้ (ให้ระบบรันเลข 1, 2, 3... อัตโนมัติ)
   email    String        @unique                         // อีเมล (บังคับว่าห้ามสมัครซ้ำ)
   password String                                        // Password
+  prs      PurchaseRequest[]                             // 1 User สามารถออก PR ได้หลายใบ
 }
 
 model PurchaseRequest {
@@ -24,4 +25,6 @@ model PurchaseRequest {
   title   String                                         // ชื่อรายการที่ขอสั่งซื้อ
   amount  Float                                          // จำนวนเงิน (ใช้ Float เก็บตัวเลขแบบทศนิยม)
   status  String        @default("Pending")              // สถานะการสั่งซื้อ (ถ้าไม่ได้ระบุให้ขึ้นเป็นรอดำเนินการ "Pending" รอดำเนินการ)
+  userId  Int                                            // เก็บ User ที่ขอเบิก
+  user     User     @relation(fields: [userId], references: [id]) // Relation to User model , userId คือ foreign key ที่อ้างอิงไปที่ User.id
 }
