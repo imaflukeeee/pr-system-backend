@@ -21,7 +21,14 @@ export class PrService {
   async getPrs(userId: number) {
     return this.prisma.purchaseRequest.findMany({
       where: { userId: userId }, // ค้นหาเฉพาะใบ PR ของพนักงานคนนี้
-      orderBy: { id: 'desc' } // เรียงใบสั่งซื้อใหม่ล่าสุดไว้บนสุด
+      orderBy: { id: 'desc' }, // เรียงใบสั่งซื้อใหม่ล่าสุดไว้บนสุด
+    });
+  }
+  // Function updateStatus PR
+  async updateStatus(id: number, status: string) {
+    return this.prisma.purchaseRequest.update({
+      where: { id: id }, // ค้นหาใบ PR จาก (id)
+      data: { status: status }, // สั่งเปลี่ยนค่า status ใน table
     });
   }
 }
