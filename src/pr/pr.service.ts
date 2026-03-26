@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePrDto } from 'src/dto/create-pr.dto';
 
@@ -29,6 +29,22 @@ export class PrService {
     return this.prisma.purchaseRequest.update({
       where: { id: id }, // ค้นหาใบ PR จาก (id)
       data: { status: status }, // สั่งเปลี่ยนค่า status ใน table
+    });
+  }
+  async deletePr(id: number, userId: number) {
+    const pr = await this.prisma.purchaseRequest.findFirst({ // หาดูก่อนว่ามีใบ PR นี้ และเป็นของ User คนนี้ไหม
+      where: { id: id, userId: userId },
+    });
+    if (!pr) { // ถ้าไม่เจอ หรือไม่ใช่เจ้าของ
+      throw new ForbiddenException(
+        'ไม่พบรายการนี้หรือคุณไม่มีสิทธิ์ลบรายการนี้',
+      );
+    }
+    if (pr.status !== 'Pending') { // ถ้าไม่ใช่สถานะ Pending ห้ามลบ (ถ้าเป็น Approved หรือ Rejected จะไม่สามารถลบได้)
+      throw new ForbiddenException('ไม่สามารถลบรายการที่ผ่านการพิจารณาแล้วได้');
+    }
+    return await this.prisma.purchaseRequest.delete({ // ตรวจสอบถ้าเป็นเจ้า PR จะสั่งลบได้
+      where: { id: id },
     });
   }
 }
