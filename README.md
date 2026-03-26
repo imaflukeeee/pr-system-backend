@@ -23,7 +23,10 @@
 - `POST /auth/register`: สมัครสมาชิกใหม่
 - `POST /auth/login`: เข้าสู่ระบบเพื่อรับ Token
 
-### PR Module (ต้องแนบ Bearer Token)
-- `POST /pr`: สร้างใบขอซื้อใหม่
-- `GET /pr`: ดูประวัติการขอซื้อของตนเอง
-- `PATCH /pr/:id/status`: อัปเดตสถานะใบ PR (เฉพาะ Approved/Rejected)
+### PR Module (Security & Rules)
+- **POST `/pr`**: สร้างใบขอซื้อใหม่ (ผูกกับ User ID จาก Token)
+- **GET `/pr`**: ดูรายการใบขอซื้อทั้งหมดของตนเอง
+- **PATCH `/pr/:id/status`**: อัปเดตสถานะ (เฉพาะ Admin/Purchasing เท่านั้น)
+- **DELETE `/pr/:id`**: ลบใบขอซื้อโดยมีเงื่อนไข
+  - ต้องเป็นเจ้าของใบ PR นั้นๆ เท่านั้น
+  - **สถานะต้องเป็น `Pending` เท่านั้น** ถึงจะลบได้เพื่อป้องกันการลบเอกสารที่อนุมัติไปแล้ว
