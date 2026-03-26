@@ -18,5 +18,6 @@ import { ConfigService } from '@nestjs/config';
   ],
   providers: [AuthService], // logic (login/register)
   controllers: [AuthController], // รับ request จาก client
+  exports: [JwtModule], // exports JwtModule ให้เรียกใช้งานได้
 })
 export class AuthModule {}
