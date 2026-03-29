@@ -12,12 +12,18 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role { // enum สำหรับกำหนดประเภทผูใช้งาน
+  USER
+  ADMIN
+}
+
 // Table เก็บข้อมูลผู้ใช้งาน (สำหรับ Login)
 model User {
   id       Int           @id @default(autoincrement())   // รหัสผู้ใช้ (ให้ระบบรันเลข 1, 2, 3... อัตโนมัติ)
   email    String        @unique                         // อีเมล (บังคับว่าห้ามสมัครซ้ำ)
   password String                                        // Password
   prs      PurchaseRequest[]                             // 1 User สามารถออก PR ได้หลายใบ
+  role     Role          @default(USER)                  // กำหนดค่าเริ่มต้น Default ให้เป็น User
 }
 
 model PurchaseRequest {

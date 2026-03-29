@@ -37,8 +37,8 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(pass, user.password))) {
       throw new UnauthorizedException('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
     }
-    const payload = { userID: user.id, email: user.email }; // สร้าง payload เก็บ user ที่จำเป็น
-    const token = this.jwtService.sign(payload); // สร้าง JWT Token
+    const payload = { userID: user.id, email: user.email, role: user.role }; // สร้าง payload เก็บ user ที่จำเป็น
+    const token = this.jwtService.sign(payload); // สร้าง JWT Tokennp
     return {
       message: 'เข้าสู่ระบบสำเร็จ',
       access_token: token,
