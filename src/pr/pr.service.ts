@@ -47,4 +47,14 @@ export class PrService {
       where: { id: id },
     });
   }
+  async findAllPrs() { // ฟังก์ชันค้นหาใบ pr ทั้งหมด
+    return await this.prisma.purchaseRequest.findMany({
+      include: {
+        user: {
+          select: { email: true } // ดึง Email user ที่สร้าง pr มาแวดง
+        }
+      },
+      orderBy: { id: 'desc' } // เรียงจากรายการล่าสุดขึ้นก่อน
+    })
+  }
 }

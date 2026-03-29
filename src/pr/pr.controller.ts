@@ -14,6 +14,9 @@ import { JwtAuthGuard, JwtPayload } from '../auth/jwt.guard';
 import { Request } from 'express';
 import { CreatePrDto } from 'src/dto/create-pr.dto';
 import { UpdatePrStatusDto } from 'src/dto/update-pr-status.dto';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('pr')
 export class PrController {
@@ -27,12 +30,15 @@ export class PrController {
   ) {
     return await this.prService.createPr(Number(req.user.userID), body);
   }
+  
   @UseGuards(JwtAuthGuard)
   @Get()
   async getMyPrs(@Req() req: Request & { user: JwtPayload }) {
     return await this.prService.getPrs(Number(req.user.userID));
   }
-  @UseGuards(JwtAuthGuard)
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('Admin')
   @Patch(':id/status') // กำหนด URL ให้เป็น /pr/เลข id/status
   async updatePrStatus(
     @Param('id') id: string, // ดึงเลข id จาก url
@@ -40,6 +46,7 @@ export class PrController {
   ) {
     return await this.prService.updateStatus(Number(id), body.status);
   }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deletePr(
