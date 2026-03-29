@@ -55,6 +55,6 @@ export class PrService {
         }
       },
       orderBy: { id: 'desc' } // เรียงจากรายการล่าสุดขึ้นก่อน
-    })
+    });
   }
 }

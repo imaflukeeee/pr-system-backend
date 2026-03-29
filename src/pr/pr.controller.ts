@@ -30,7 +30,7 @@ export class PrController {
   ) {
     return await this.prService.createPr(Number(req.user.userID), body);
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @Get()
   async getMyPrs(@Req() req: Request & { user: JwtPayload }) {
@@ -55,5 +55,12 @@ export class PrController {
   ) {
     // ลบ id (เลขใบ pr) ของ userID
     return await this.prService.deletePr(Number(id), Number(req.user.userID));
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('Admin')
+  @Get('all')
+  async getAllPrs() {
+    return await this.prService.findAllPrs();
   }
 }
