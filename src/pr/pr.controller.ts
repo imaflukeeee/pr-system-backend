@@ -15,7 +15,6 @@ import { Request } from 'express';
 import { CreatePrDto } from 'src/dto/create-pr.dto';
 import { UpdatePrStatusDto } from 'src/dto/update-pr-status.dto';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { Role } from '@prisma/client';
 import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('pr')
