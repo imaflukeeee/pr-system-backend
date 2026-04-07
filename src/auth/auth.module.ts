@@ -3,21 +3,21 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtStrategy } from './jwt.strategy'; 
 
-// Module สำหรับ Authentication และ JWT configuration
 @Module({
-  imports: [
-    // ตั้งค่า JWT โดยใช้ secret จาก .env
+  imports: [ // import JWT ดึง secret key จาก .env มาใช้งาน
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
+        // fallback_secret ไว้กัน undefined
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },
+        signOptions: { expiresIn: '1d' }, // token มีอายุ 1 วัน
       }),
     }),
   ],
-  providers: [AuthService], // logic (login/register)
-  controllers: [AuthController], // รับ request จาก client
-  exports: [JwtModule], // exports JwtModule ให้เรียกใช้งานได้
+  providers: [AuthService, JwtStrategy],
+  controllers: [AuthController],
+  exports: [JwtModule], 
 })
 export class AuthModule {}
