@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 // ตั้งค่า Prisma ใช้ PostgreSQL
 generator client {
   provider = "prisma-client-js"
@@ -12,25 +7,27 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role { // enum สำหรับกำหนดประเภทผูใช้งาน
+enum Role { 
   User
   Admin
 }
 
-// Table เก็บข้อมูลผู้ใช้งาน (สำหรับ Login)
 model User {
-  id       Int           @id @default(autoincrement())   // รหัสผู้ใช้ (ให้ระบบรันเลข 1, 2, 3... อัตโนมัติ)
-  email    String        @unique                         // อีเมล (บังคับว่าห้ามสมัครซ้ำ)
-  password String                                        // Password
-  prs      PurchaseRequest[]                             // 1 User สามารถออก PR ได้หลายใบ
-  role     Role          @default(User)                  // กำหนดค่าเริ่มต้น Default ให้เป็น User
+  id       Int               @id @default(autoincrement())   
+  email    String            @unique                         
+  password String                                            
+  prs      PurchaseRequest[]                                 
+  role     Role              @default(User)                  
 }
 
 model PurchaseRequest {
-  id      Int           @id @default(autoincrement())  // รหัสการสั่งซื้อ (Run No. อัตโนมัติ)
-  title   String                                         // ชื่อรายการที่ขอสั่งซื้อ
-  amount  Float                                          // จำนวนเงิน (ใช้ Float เก็บตัวเลขแบบทศนิยม)
-  status  String        @default("Pending")              // สถานะการสั่งซื้อ (ถ้าไม่ได้ระบุให้ขึ้นเป็นรอดำเนินการ "Pending" รอดำเนินการ)
-  userId  Int                                            // เก็บ User ที่ขอเบิก
-  user     User     @relation(fields: [userId], references: [id]) // Relation to User model , userId คือ foreign key ที่อ้างอิงไปที่ User.id
+  id          Int      @id @default(autoincrement()) 
+  title       String   // ชื่อรายการที่ขอสั่งซื้อ
+  department  String   // เพิ่มช่องเก็บแผนก
+  amount      Float    // จำนวนเงิน 
+  reason      String?  // เพิ่มช่องเก็บเหตุผล (ใส่ ? แปลว่าว่างได้)
+  status      String   @default("Pending") 
+  createdAt   DateTime @default(now()) // เก็บวันที่และเวลาที่สร้างใบ PR อัตโนมัติ
+  userId      Int      
+  user        User     @relation(fields: [userId], references: [id]) 
 }
